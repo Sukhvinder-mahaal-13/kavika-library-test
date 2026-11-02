@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* ==============================
+GLOBAL VARIABLES
+================================ */
+
+:root {
+font-family: 'Inter', sans-serif;
+
+--primary: #635bff;
+--primary-dark: #5148e5;
+--secondary: #8b5cf6;
+
+--background: #0b1020;
+--surface: #141b2d;
+--surface-light: #1c2740;
+
+--text-primary: #f8fafc;
+--text-secondary: #94a3b8;
+
+--border: rgba(255, 255, 255, 0.09);
+
+--success: #22c55e;
+--danger: #ef4444;
+--warning: #f59e0b;
+
+--shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+
+--radius-sm: 8px;
+--radius-md: 14px;
+--radius-lg: 22px;
+
+--transition: all 0.3s ease;
+
+
+}
+
+/* ==============================
+RESET
+================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+min-width: 320px;
+min-height: 100vh;
+
+
+background: var(--background);
+color: var(--text-primary);
+
+font-family: 'Inter', sans-serif;
+line-height: 1.6;
+
+
+}
+
+/* ==============================
+COMMON ELEMENTS
+================================ */
+
+button,
+input,
+textarea,
+select {
+font: inherit;
+}
+
+button {
+cursor: pointer;
+}
+
+button:disabled {
+cursor: not-allowed;
+opacity: 0.6;
+}
+
+a {
+color: inherit;
+text-decoration: none;
+}
+
+img {
+max-width: 100%;
+display: block;
+}
+
+/* ==============================
+COMMON BUTTON
+================================ */
+
+.btn-primary {
+border: none;
+outline: none;
+
+
+padding: 12px 22px;
+
+border-radius: var(--radius-sm);
+
+background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--secondary)
+);
+
+color: white;
+font-weight: 600;
+
+transition: var(--transition);
+
+
+}
+
+.btn-primary:hover {
+transform: translateY(-2px);
+
+
+box-shadow: 0 8px 25px rgba(99, 91, 255, 0.3);
+
+
+}
+
+/* ==============================
+COMMON CONTAINER
+================================ */
+
+.container {
+width: min(1200px, 92%);
+margin: auto;
+}
+
+/* ==============================
+SCROLLBAR
+================================ */
+
+::-webkit-scrollbar {
+width: 8px;
+}
+
+::-webkit-scrollbar-track {
+background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+background: #35415c;
+border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: var(--primary);
+}
+
+/* ==============================
+SELECTION
+================================ */
+
+::selection {
+background: var(--primary);
+color: white;
+}
+
+/* ==============================
+RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+.container {
+width: 94%;
+}
+}
