@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
@@ -11,31 +12,47 @@ const resultRoutes = require("./routes/result.routes");
 
 const app = express();
 
-// Trust proxy
+// =====================================
+// TRUST PROXY
+// =====================================
+
 if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
 
-// CORS configuration
+// =====================================
+// CORS CONFIGURATION
+// =====================================
+
 app.use(
     cors({
         origin: process.env.CLIENT_URL || "http://localhost:5173",
-        credentials: true
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
 
-// Parse incoming JSON
+// =====================================
+// BODY PARSERS
+// =====================================
+
 app.use(express.json());
 
-// Parse form data
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
+// =====================================
+// SESSION CONFIGURATION
+// =====================================
+
 app.use(
     session({
         name: "kavika.sid",
+
         secret: process.env.SESSION_SECRET,
+
         resave: false,
+
         saveUninitialized: false,
 
         store: MongoStore.create({
@@ -46,52 +63,82 @@ app.use(
 
         cookie: {
             httpOnly: true,
+
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+
+            sameSite:
+                process.env.NODE_ENV === "production"
+                    ? "none"
+                    : "lax",
+
             maxAge: 24 * 60 * 60 * 1000
         }
     })
 );
 
-// API Routes
+// =====================================
+// API ROUTES
+// =====================================
+
 app.use("/api/users", userRoutes);
+
 app.use("/api/admin", adminRoutes);
+
 app.use("/api/tests", testRoutes);
+
 app.use("/api/tests", questionRoutes);
+
 app.use("/api/results", resultRoutes);
 
-// Home route
+// =====================================
+// HOME ROUTE
+// =====================================
+
 app.get("/", (req, res) => {
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "Welcome to KAVIKA Library Test API"
     });
 });
 
-// Health check
+// =====================================
+// HEALTH CHECK
+// =====================================
+
 app.get("/api/health", (req, res) => {
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "KAVIKA Server is running"
     });
 });
 
-// Unknown routes
+// =====================================
+// UNKNOWN ROUTES
+// =====================================
+
 app.use((req, res) => {
-    res.status(404).json({
+    return res.status(404).json({
         success: false,
         message: "API route not found."
     });
 });
 
-// Global error handler
+// =====================================
+// GLOBAL ERROR HANDLER
+// =====================================
+
 app.use((error, req, res, next) => {
     console.error("Global Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
         success: false,
         message: "Internal server error."
     });
 });
 
+// =====================================
+// EXPORT APP
+// =====================================
+
 module.exports = app;
+
