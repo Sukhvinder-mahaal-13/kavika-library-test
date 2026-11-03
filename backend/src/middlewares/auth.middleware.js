@@ -3,20 +3,63 @@ const User = require("../models/User");
 
 const isUserAuthenticated = async (req, res, next) => {
     try {
+        // =====================================
+        // SESSION DEBUGGING
+        // =====================================
+
         const userId = req.session?.userId;
 
+        console.log("========== USER AUTH DEBUG ==========");
+
+        console.log("Request URL:", req.originalUrl);
+        console.log("Request Method:", req.method);
+
+        console.log("Session Exists:", !!req.session);
+        console.log("Session ID Exists:", !!req.sessionID);
+
+        console.log("Cookie Received:", !!req.headers.cookie);
+        console.log("User ID Exists:", !!userId);
+
+        console.log("=====================================");
+
+        // =====================================
+        // CHECK USER SESSION
+        // =====================================
+
         if (!userId) {
+            console.log("AUTH RESULT: User session missing.");
+
             return res.status(401).json({
                 success: false,
                 message: "Please login to continue."
             });
         }
 
+        // =====================================
+        // FIND USER IN DATABASE
+        // =====================================
+
         const user = await User.findById(userId);
 
         if (!user || user.isArchived === true) {
-            return req.session.destroy(() => {
-                res.clearCookie("kavika.sid");
+            console.log(
+                "AUTH RESULT:",
+                user
+                    ? "User account is archived."
+                    : "User account not found."
+            );
+
+            return req.session.destroy((error) => {
+                if (error) {
+                    console.error("Session Destroy Error:", error);
+                }
+
+                res.clearCookie("kavika.sid", {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "none",
+                    path: "/"
+                });
 
                 return res.status(401).json({
                     success: false,
@@ -27,9 +70,15 @@ const isUserAuthenticated = async (req, res, next) => {
             });
         }
 
+        // =====================================
+        // AUTHENTICATED USER
+        // =====================================
+
         req.user = user;
 
-        next();
+        console.log("AUTH RESULT: User authenticated successfully.");
+
+        return next();
 
     } catch (error) {
         console.error("User Authentication Error:", error);
@@ -42,3 +91,4 @@ const isUserAuthenticated = async (req, res, next) => {
 };
 
 module.exports = isUserAuthenticated;
+
